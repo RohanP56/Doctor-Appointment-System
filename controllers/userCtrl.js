@@ -84,33 +84,33 @@ const authController = async (req, res) => {
   }
 };
 
-// APpply DOctor CTRL
+// Apply Doctor ctrl
 const applyDoctorController = async (req, res) => {
   try {
     const newDoctor = await doctorModel({ ...req.body, status: "pending" });
     await newDoctor.save();
     const adminUser = await userModel.findOne({ isAdmin: true });
-    const notifcation = adminUser.notifcation;
-    notifcation.push({
+    const notification = adminUser.notification;
+    notification.push({
       type: "apply-doctor-request",
-      message: `${newDoctor.firstName} ${newDoctor.lastName} Has Applied For A Doctor Account`,
+      message: `${newDoctor.firstName} ${newDoctor.lastName} has applied for a Doctor account`,
       data: {
         doctorId: newDoctor._id,
         name: newDoctor.firstName + " " + newDoctor.lastName,
         onClickPath: "/admin/docotrs",
       },
     });
-    await userModel.findByIdAndUpdate(adminUser._id, { notifcation });
+    await userModel.findByIdAndUpdate(adminUser._id, { notification });
     res.status(201).send({
       success: true,
-      message: "Doctor Account Applied SUccessfully",
+      message: "Doctor account applied Successfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "Error WHile Applying For Doctotr",
+      message: "Error while applying for Doctor",
     });
   }
 };
